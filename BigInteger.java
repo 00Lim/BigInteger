@@ -1,174 +1,142 @@
-package algorithm;
-
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class BigInteger
 {
-	// Å« Á¤¼ö¸¦ Ç¥ÇöÇÒ type
-	ArrayList<Integer> big;
+	// í° ì •ìˆ˜ë¥¼ í‘œí˜„í•  type
+	private LinkedList<Integer> big;
 
 	/**
-	 * »ı¼ºÀÚ
-	 * @param number Å« Á¤¼ö¸¦ ÀÔ·Â¹ŞÀ½
+	 * ìƒì„±ì
+	 * íŒŒë¼ë¯¸í„°ê°€ ì—†ìœ¼ë©´ 0ìœ¼ë¡œ ì„¤ì •
+	 */
+	public BigInteger()
+	{
+		this("0");
+	}
+	
+	/**
+	 * ìƒì„±ì
+	 * @param number í° ì •ìˆ˜
 	 */
 	public BigInteger(String number)
 	{
 		int size = number.length();
 
-		big = new ArrayList<Integer>();
+		this.big = new LinkedList<Integer>();
 
-		// StringÀ¸·Î ÀÔ·Â¹ŞÀº ¼ıÀÚ¸¦ list·Î ¿Å±è
-		// ºÎÈ£°¡ ÀÖÀ» ¼öµµ ÀÖ´Â ¸Ç Ã³À½ ±ÛÀÚ´Â ³ªÁß¿¡ Ã³¸®
+		// Stringìœ¼ë¡œ ì…ë ¥ë°›ì€ ìˆ«ìë¥¼ listë¡œ ì˜®ê¹€
+		// ë¶€í˜¸ê°€ ìˆì„ ìˆ˜ë„ ìˆëŠ” ë§¨ ì²˜ìŒ ê¸€ìëŠ” ë‚˜ì¤‘ì— ì²˜ë¦¬
 		for(int i = size - 1; i > 0; i--)
 		{
-			big.add(number.charAt(i) - '0');
+			this.big.add(number.charAt(i) - '0');
 		}
 
-		// ÀÔ·Â¹ŞÀº ¼ıÀÚÀÇ ºÎÈ£¸¦ È®ÀÎÇÑ´Ù.
-		// À½¼öÀÏ °æ¿ì ºÎÈ£ºñÆ®´Â 1
+		// ì…ë ¥ë°›ì€ ìˆ«ìì˜ ë¶€í˜¸ë¥¼ í™•ì¸í•œë‹¤.
+		// ìŒìˆ˜ì¼ ê²½ìš° ë¶€í˜¸ë¹„íŠ¸ëŠ” 1
 		if(number.charAt(0) == '-')
 		{
-			big.add(1);
+			this.big.add(1);
 		}
-		// 0ÀÌ³ª ¾ç¼öÀÏ °æ¿ì ºÎÈ£ºñÆ®´Â 0
+		// 0ì´ë‚˜ ì–‘ìˆ˜ì¼ ê²½ìš° ë¶€í˜¸ë¹„íŠ¸ëŠ” 0
 		else
 		{
-			big.add(number.charAt(0) - '0');
-			big.add(0);
+			this.big.add(number.charAt(0) - '0');
+			this.big.add(0);
 		}
 	}
 
-	// 10ÀÇ mÁ¦°ö°ú °öÇÏ±â ¿¬»ê
-	public void Multiplication10(int m)
-	{
-		for(int i = 0; i < m; i++)
-		{
-			big.add(0, 0);
-		}
-		
-		printNumber();
-	}
-
-	// 10ÀÇ mÁ¦°ö°ú ³ª´©±â ¿¬»ê
+	// 10ì˜ mì œê³±ê³¼ ë‚˜ëˆ„ê¸° ì—°ì‚°
 	public void Division10(int m)
 	{
 		for(int i = 0; i < m; i++)
 		{
-			big.remove(0);
+			this.big.remove(0);
 		}
-		
+
 		printNumber();
 	}
-
-	// 10ÀÇ mÁ¦°öÀÇ ³ª¸ÓÁö ¿¬»ê
-	public void Modulo10(int m)
+	
+	/**
+	 * í° ì •ìˆ˜ë¥¼ ë°˜í™˜í•œë‹¤.
+	 * @return í° ì •ìˆ˜ê°€ ë‹´ê²¨ìˆëŠ” ë°°ì—´
+	 */
+	public List<Integer> get()
 	{
-		for(int i = big.size() - 2; i >= m; i--)
-		{
-			big.remove(i);
-		}
-		
-		printNumber();
+		return this.big;
 	}
-
-	// µÎ Å« Á¤¼öÀÇ ´õÇÏ±â ¿¬»ê
-	public void Plus(BigInteger v)
+	
+	/**
+	 * í° ì •ìˆ˜ë¥¼ êµ¬ì„±í•˜ê³  ìˆëŠ” í•œ ìˆ«ìë¥¼ ë°˜í™˜í•œë‹¤.
+	 * @param index ë°˜í™˜í•  ìˆ«ìì˜ ì¸ë±ìŠ¤
+	 * @return í° ì •ìˆ˜ì˜ index ìœ„ì¹˜ì˜ ìˆ«ì
+	 */
+	public int get(int index)
 	{
-		// ´õÇÑ °ªÀ» ÀÓ½Ã·Î ÀúÀåÇÒ ¸®½ºÆ®
-		ArrayList<Integer> temp = new ArrayList<>();
-		// ¿Ã¸²¼ö
-		int over = 0;
-		
-		// µÎ Á¤¼öÀÇ ºÎÈ£
-		int signthis = big.get(big.size() - 1);
-		int signv = v.big.get(v.big.size() - 1);
-		// µÎ Á¤¼öÀÇ Å©±â
-		int sizethis = big.size();
-		int sizev = v.big.size();
-		
-		// µÎ Å« Á¤¼öÀÇ ºÎÈ£°¡ °°À» ¶§
-		if(signthis == signv)
+		try
 		{
-			// µÎ Å« Á¤¼öÀÇ Å©±â°¡ °°À» ¶§
-			if(sizethis == sizev)
-			{
-				temp.addAll(big);
-				temp.remove(temp.size() - 1);
-			}
-			// Å©±â°¡ ´Ù¸¦ ¶§
-			else if(sizethis > sizev)
-			{
-				temp.addAll(big);
-				temp.remove(temp.size() - 1);
-			}
-			else
-			{
-				temp.addAll(v.big);
-				temp.remove(temp.size() - 1);
-			}
-			
-			// °ªÀ» ´õÇØÁØ´Ù.
-			for(int i = 0; i < Math.min(sizethis, sizev) - 1 - signthis; i++)
-			{
-				temp.set(i, (big.get(i) + v.big.get(i) + over) % 10);
-				over = (big.get(i) + v.big.get(i) + over) / 10;
-			}
-			// ¸¶Áö¸· ÀÚ¸®¿¡¼­ ¿Ã¸²¼ö°¡ ÀÖ´Ù¸é
-			if(over == 1)
-			{
-				// ±× °ªÀ» Æ÷ÇÔÇØÁØ´Ù.
-				temp.add(over);
-			}
-			// ºÎÈ£ºñÆ® Ã·°¡
-			temp.add(signthis);
-			// ´õÇÑ °ªÀ» ¿Å°ÜÁØ´Ù.
-			big.clear();
-			big.addAll(temp);
+			return this.big.get(index);
 		}
-		// µÎ Å« Á¤¼öÀÇ ºÎÈ£°¡ ´Ù¸¦ ¶§
-		else
+		catch(Exception e)
 		{
-			// µÎ Å« Á¤¼öÀÇ Å©±â°¡ ´Ù¸¦ ¶§
-			if(sizethis > sizev)
-			{
-				
-			}
+			e.printStackTrace();
+			return index;
 		}
-		
-		printNumber();
+	}
+	
+	/**
+	 * í° ì •ìˆ˜ì˜ ë¶€í˜¸ë¥¼ ë°˜í™˜í•œë‹¤.
+	 * 
+	 * @return ë¶€í˜¸ê°€ -ì´ë©´ 1, 0ì´ë‚˜ ì–‘ìˆ˜ì´ë©´ 0ì„ ë°˜í™˜
+	 */
+	public int getSign()
+	{
+		return this.big.get(this.big.size() - 1);
 	}
 
 	public void Minus(BigInteger v)
 	{
 		v.big.set(v.big.size() - 1, ~(v.big.get(v.big.size())) + 2);
-		
+
 		Plus(v);
 	}
-	
-	public void Multiple(BigInteger v)
+
+	// 10ì˜ mì œê³±ì˜ ë‚˜ë¨¸ì§€ ì—°ì‚°
+	public void Modulo10(int m)
 	{
-		int signthis = big.get(big.size() - 1);
+		for(int i = this.big.size() - 2; i >= m; i--)
+		{
+			this.big.remove(i);
+		}
+
+		printNumber();
+	}
+
+	public void Multiplication(BigInteger v)
+	{
+		int signthis = this.big.get(this.big.size() - 1);
 		int signv = v.big.get(v.big.size() - 1);
-		
+
 		ArrayList<Integer> temp = new ArrayList<>();
-		
+
 		int over = 0;
-		
-		for(int i = 0; i < big.size() - 1; i++)
+
+		for(int i = 0; i < this.big.size() - 1; i++)
 		{
 			over = 0;
-			
+
 			for(int j = 0; j < v.big.size() - 1; j++)
 			{
 				if(temp.size() <= i + j)
 				{
-					temp.add((big.get(i) * v.big.get(j) + over) % 10);
-					over = (big.get(i) * v.big.get(j)) / 10;
+					temp.add((this.big.get(i) * v.big.get(j) + over) % 10);
+					over = (this.big.get(i) * v.big.get(j)) / 10;
 				}
 				else
 				{
-					temp.set(i + j, (temp.get(i + j) + big.get(i) * v.big.get(j) + over) % 10);
-					over = (big.get(i) * v.big.get(j)) / 10;
+					temp.set(i + j, (temp.get(i + j) + this.big.get(i) * v.big.get(j) + over) % 10);
+					over = (this.big.get(i) * v.big.get(j)) / 10;
 				}
 			}
 		}
@@ -177,37 +145,140 @@ public class BigInteger
 			temp.add(over);
 		}
 		temp.add(signthis ^ signv);
-		big.clear();
-		big.addAll(temp);
-		
+		this.big.clear();
+		this.big.addAll(temp);
+
 		printNumber();
 	}
 
-	// Å« Á¤¼ö¸¦ Ãâ·ÂÇØÁØ´Ù.
+	// 10ì˜ mì œê³±ê³¼ ê³±í•˜ê¸° ì—°ì‚°
+	public void Multiplication10(int m)
+	{
+		for(int i = 0; i < m; i++)
+		{
+			this.big.add(0, 0);
+		}
+
+		printNumber();
+	}
+
+	// ë‘ í° ì •ìˆ˜ì˜ ë”í•˜ê¸° ì—°ì‚°
+	public void Plus(BigInteger v)
+	{
+		// ë”í•œ ê°’ì„ ì„ì‹œë¡œ ì €ì¥í•  ë¦¬ìŠ¤íŠ¸
+		LinkedList<Integer> temp = new LinkedList<>();
+		// ì˜¬ë¦¼ìˆ˜
+		int over = 0;
+
+		// ë‘ ì •ìˆ˜ì˜ ë¶€í˜¸
+		int signthis = this.big.get(this.big.size() - 1);
+		int signv = v.big.get(v.big.size() - 1);
+		// ë‘ ì •ìˆ˜ì˜ í¬ê¸°
+		int sizethis = this.big.size();
+		int sizev = v.big.size();
+
+		// ë‘ í° ì •ìˆ˜ì˜ ë¶€í˜¸ê°€ ê°™ì„ ë•Œ
+		if(signthis == signv)
+		{
+			// ë‘ í° ì •ìˆ˜ì˜ í¬ê¸°ê°€ ê°™ì„ ë•Œ
+			if(sizethis == sizev)
+			{
+				temp.addAll(this.big);
+				temp.remove(temp.size() - 1);
+			}
+			// í¬ê¸°ê°€ ë‹¤ë¥¼ ë•Œ
+			else if(sizethis > sizev)
+			{
+				temp.addAll(this.big);
+				temp.remove(temp.size() - 1);
+			}
+			else
+			{
+				temp.addAll(v.big);
+				temp.remove(temp.size() - 1);
+			}
+
+			// ê°’ì„ ë”í•´ì¤€ë‹¤.
+			for(int i = 0; i < Math.min(sizethis, sizev) - 1 - signthis; i++)
+			{
+				temp.set(i, (this.big.get(i) + v.big.get(i) + over) % 10);
+				over = (this.big.get(i) + v.big.get(i) + over) / 10;
+			}
+			// ë§ˆì§€ë§‰ ìë¦¬ì—ì„œ ì˜¬ë¦¼ìˆ˜ê°€ ìˆë‹¤ë©´
+			if(over == 1)
+			{
+				// ê·¸ ê°’ì„ í¬í•¨í•´ì¤€ë‹¤.
+				temp.add(over);
+			}
+			// ë¶€í˜¸ë¹„íŠ¸ ì²¨ê°€
+			temp.add(signthis);
+			// ë”í•œ ê°’ì„ ì˜®ê²¨ì¤€ë‹¤.
+			this.big.clear();
+			this.big.addAll(temp);
+		}
+		// ë‘ í° ì •ìˆ˜ì˜ ë¶€í˜¸ê°€ ë‹¤ë¥¼ ë•Œ
+		else
+		{
+			// ë‘ í° ì •ìˆ˜ì˜ í¬ê¸°ê°€ ë‹¤ë¥¼ ë•Œ
+			if(sizethis > sizev)
+			{
+
+			}
+		}
+
+		printNumber();
+	}
+
+	// í° ì •ìˆ˜ë¥¼ ì¶œë ¥í•´ì¤€ë‹¤.
 	public void printNumber()
 	{
-		if(big.get(big.size() - 1) == 1)
+		if(this.big.get(this.big.size() - 1) == 1)
 		{
 			System.out.print("-");
 		}
-		for(int i = big.size() - 2; i >= 0; i--)
+		for(int i = this.big.size() - 2; i >= 0; i--)
 		{
-			System.out.print(big.get(i));
+			System.out.print(this.big.get(i));
 		}
 		System.out.println();
 	}
 	
+	public void set(String number)
+	{
+		int size = number.length();
+
+		// Stringìœ¼ë¡œ ì…ë ¥ë°›ì€ ìˆ«ìë¥¼ listë¡œ ì˜®ê¹€
+		// ë¶€í˜¸ê°€ ìˆì„ ìˆ˜ë„ ìˆëŠ” ë§¨ ì²˜ìŒ ê¸€ìëŠ” ë‚˜ì¤‘ì— ì²˜ë¦¬
+		for(int i = size - 1; i > 0; i--)
+		{
+			this.big.add(number.charAt(i) - '0');
+		}
+
+		// ì…ë ¥ë°›ì€ ìˆ«ìì˜ ë¶€í˜¸ë¥¼ í™•ì¸í•œë‹¤.
+		// ìŒìˆ˜ì¼ ê²½ìš° ë¶€í˜¸ë¹„íŠ¸ëŠ” 1
+		if(number.charAt(0) == '-')
+		{
+			this.big.add(1);
+		}
+		// 0ì´ë‚˜ ì–‘ìˆ˜ì¼ ê²½ìš° ë¶€í˜¸ë¹„íŠ¸ëŠ” 0
+		else
+		{
+			this.big.add(number.charAt(0) - '0');
+			this.big.add(0);
+		}
+	}
+
 	public static void main(String args[])
 	{
 		BigInteger u = new BigInteger("52465312");
 		BigInteger v = new BigInteger("8986451325");
-		
+
 		System.out.print("BigNumber u =   ");
 		u.printNumber();
 		System.out.print("BigNumber v = ");
 		v.printNumber();
 		System.out.println();
-		
+/*
 		System.out.print("u.Multiplication10(3) = "); u.Multiplication10(3);
 		u = new BigInteger("52465312");
 		v = new BigInteger("8986451325");
@@ -223,6 +294,8 @@ public class BigInteger
 		System.out.print("u.Minus(v) = \n"); //u.Minus(v);
 		u = new BigInteger("52465312");
 		v = new BigInteger("8986451325");
-		System.out.print("u.Multiple(v) = "); u.Multiple(v);
+		System.out.print("u.Multiple(v) = "); u.Multiplication(v);*/
+		
+		
 	}
 }
